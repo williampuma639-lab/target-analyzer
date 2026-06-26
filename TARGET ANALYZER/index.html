@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CTU | Target Analyzer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Fondo Matrix -->
+    <canvas id="matrix"></canvas>
+
+    <audio id="musica-fondo" loop>
+        <source src="sonido.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="bunker-container">
+        <header class="consola-input">
+            <span class="prompt-text">[TARGET_URL]:</span>
+            <input type="text" id="target-url" placeholder="Ingrese dominio objetivo..." autocomplete="off">
+            <button id="btn-scan">[INICIAR_ESCANEO]</button>
+        </header>
+
+        <main class="grid-paneles">
+            <section class="panel" id="panel-vista">
+                <h2 class="panel-titulo">PANEL 1: [VISTA]</h2>
+                <div class="contenido-panel">
+                    Esperando objetivo<span class="dots"></span>
+                </div>
+            </section>
+
+            <section class="panel" id="panel-tech">
+                <h2 class="panel-titulo">PANEL 2: [TECNOLOGÍA]</h2>
+                <div class="contenido-panel">
+                    Esperando objetivo<span class="dots"></span>
+                </div>
+            </section>
+
+            <section class="panel" id="panel-enlaces">
+                <h2 class="panel-titulo">PANEL 3: [MAPA_ENLACES]</h2>
+                <div class="contenido-panel scroll-activo">
+                    Esperando objetivo<span class="dots"></span>
+                </div>
+            </section>
+
+            <section class="panel" id="panel-metricas">
+                <h2 class="panel-titulo">PANEL 4: [MÉTRICAS]</h2>
+                <div class="contenido-panel">
+                    Esperando objetivo<span class="dots"></span>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        /* ===== MUSICA DE FONDO ===== */
+        window.addEventListener('click', () => {
+            const audioFondo = document.getElementById("musica-fondo");
+            audioFondo.play().catch(error => {
+                console.log("Audio bloqueado:", error);
+            });
+        }, { once: true });
+
+        /* ===== ANIMACIÓN DE PUNTOS ===== */
+        const dots = document.querySelectorAll(".dots");
+
+        setInterval(() => {
+            dots.forEach(dot => {
+                let current = dot.textContent.length;
+                current = (current + 1) % 4;
+                dot.textContent = ".".repeat(current);
+            });
+        }, 500);
+
+        /* ===== MATRIX RAIN ===== */
+        const canvas = document.getElementById("matrix");
+        const ctx = canvas.getContext("2d");
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        resizeCanvas();
+
+        const chars = "01";
+        const fontSize = 16;
+        let columns = Math.floor(canvas.width / fontSize);
+        let drops = Array(columns).fill(1);
+
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.08)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = "#7f0f07";
+            ctx.font = fontSize + "px monospace";
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars[Math.floor(Math.random() * chars.length)];
+
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawMatrix, 35);
+
+        window.addEventListener("resize", () => {
+            resizeCanvas();
+            columns = Math.floor(canvas.width / fontSize);
+            drops = Array(columns).fill(1);
+        });
+    </script>
+</body>
+</html>

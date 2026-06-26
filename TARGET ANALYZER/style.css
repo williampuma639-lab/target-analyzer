@@ -1,0 +1,212 @@
+/* 1. VARIABLES GLOBALES (Estética CTU) */
+:root {
+    --fondo-absoluto: #000000;
+    --color-terminal: #ffde21;
+    --color-alerta: #da1010;
+    --borde-panel: 1px solid #7c1111;
+    --sombra-neon: 0 0 10px rgba(255, 0, 0, 0.6);
+
+    /* Nuevas variables */
+    --radius: 8px;
+    --transition-fast: 0.2s;
+}
+
+/* 2. RESET */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* 3. ANIMACIONES */
+@keyframes neonPulse {
+    0% {
+        box-shadow: 0 0 5px rgba(255, 0, 0, 0.15);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+    }
+    100% {
+        box-shadow: 0 0 5px rgba(255, 0, 0, 0.15);
+    }
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+/* 4. BODY */
+body {
+    background-color: var(--fondo-absoluto);
+    color: var(--color-terminal);
+    font-family: 'Courier New', Courier, monospace;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Scanlines */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    background: repeating-linear-gradient(
+        to bottom,
+        rgba(57, 0, 0, 0.18) 0px,
+        rgba(57, 0, 0, 0.18) 1px,
+        transparent 2px,
+        transparent 4px
+    );
+}
+
+/* 5. CONTENEDOR */
+.bunker-container {
+    width: 95%;
+    max-width: 1200px;
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* 6. INPUT SUPERIOR */
+.consola-input {
+    display: flex;
+    gap: 15px;
+    padding: 20px;
+    border: var(--borde-panel);
+    border-radius: var(--radius);
+    box-shadow: var(--sombra-neon);
+    background-color: #0a0a0a;
+}
+
+.consola-input input {
+    flex-grow: 1;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--color-terminal);
+    color: var(--color-terminal);
+    font-family: inherit;
+    font-size: 1.2rem;
+    outline: none;
+    caret-color: var(--color-terminal);
+    transition: var(--transition-fast);
+}
+
+.consola-input input:focus {
+    border-bottom: 1px solid var(--color-alerta);
+    box-shadow: 0 5px 8px -5px var(--color-alerta);
+}
+
+.consola-input button {
+    background-color: var(--color-terminal);
+    color: var(--fondo-absoluto);
+    border: none;
+    padding: 10px 20px;
+    font-weight: bold;
+    font-family: inherit;
+    cursor: pointer;
+    border-radius: var(--radius);
+    transition: var(--transition-fast);
+}
+
+.consola-input button:hover {
+    background-color: var(--color-alerta);
+    box-shadow: 0 0 15px var(--color-alerta);
+    transform: scale(1.03);
+}
+
+/* 7. GRID */
+.grid-paneles {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 20px;
+    flex-grow: 1;
+}
+
+/* 8. PANELES */
+.panel {
+    border: var(--borde-panel);
+    border-radius: var(--radius);
+    background-color: #000000;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    animation: neonPulse 2.5s infinite;
+}
+
+.panel-titulo {
+    font-size: 1rem;
+    border-bottom: 1px dashed var(--color-terminal);
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    color: var(--color-alerta);
+    text-shadow: 0 0 6px var(--color-alerta);
+}
+
+/* 9. CONTENIDO */
+.contenido-panel {
+    flex-grow: 1;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.scroll-activo {
+    overflow-y: auto;
+    max-height: 100%;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #111;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-terminal);
+    border-radius: 4px;
+}
+
+/* 10. RESPONSIVE */
+@media (max-width: 768px) {
+    .grid-paneles {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+    }
+
+    .consola-input {
+        flex-direction: column;
+    }
+
+    .consola-input button {
+        width: 100%;
+    }
+
+    .bunker-container {
+        height: auto;
+        padding: 20px 0;
+    }
+}
+
+/* Canvas Matrix */
+#matrix {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    opacity: 0.5;
+}
+
+/* Para que todo quede por encima del canvas */
+.bunker-container {
+    position: relative;
+    z-index: 2;
+}
